@@ -1,0 +1,20 @@
+@model StreamStorageTimeLimitEditViewModel
+
+@using VisusCore.Storage.ViewModels
+
+<div class="form-check">
+    <input type="checkbox"
+           class="form-check-input"
+           asp-for="EnableTimeLimit"
+           data-bs-toggle="collapse"
+           data-bs-target=".enableTimeLimit">
+    @Html.LabelFor(model => model.EnableTimeLimit, T["Enable time limit"].Value)
+</div>
+<div class="enableTimeLimit collapse @(Model.EnableTimeLimit ? "show" : "")">
+    <fieldset class="form-group" asp-validation-class-for="TimeLimitHours">
+        @Html.LabelFor(model => model.TimeLimitHours, T["Time limit"].Value)
+        @Html.TextBoxFor(model => model.TimeLimitHours, new { @class = "form-control", @autocomplete="off" })
+        @Html.ValidationMessageFor(model => model.TimeLimitHours, string.Empty, new { @class = "text-danger" })
+        <span class="hint">@T["Time limit in hours."]</span>
+    </fieldset>
+</div>

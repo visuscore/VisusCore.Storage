@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <DefaultItemExcludes>$(DefaultItemExcludes);.git*;node_modules\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.6.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\VisusCore.AidStack\VisusCore.AidStack.OrchardCore\VisusCore.AidStack.OrchardCore.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\VisusCore.AidStack\VisusCore.AidStack\VisusCore.AidStack.csproj" />
+    <ProjectReference Include="..\VisusCore.Storage.Core\VisusCore.Storage.Core.csproj" />
+  </ItemGroup>
+
+</Project>

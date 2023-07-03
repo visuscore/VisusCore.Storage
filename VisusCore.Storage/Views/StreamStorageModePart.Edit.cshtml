@@ -1,0 +1,20 @@
+@model StreamStorageModeEditViewModel
+
+@using VisusCore.Storage.Core.Models
+@using VisusCore.Storage.ViewModels
+
+@{
+    var selectOptions = Enum.GetValues<EStorageMode>()
+        .Select(storageMode => new SelectListItem
+        {
+            Text = T[storageMode.ToString()].Value,
+            Value = storageMode.ToString(),
+            Selected = Model.StorageMode == storageMode,
+        })
+        .ToList();
+}
+
+<fieldset class="form-group" asp-validation-class-for="StorageMode">
+    @Html.LabelFor(model => model.StorageMode, T["Storage Mode"].Value)
+    @Html.DropDownListFor(model => model.StorageMode, selectOptions, new { @class = "form-control" })
+</fieldset>
