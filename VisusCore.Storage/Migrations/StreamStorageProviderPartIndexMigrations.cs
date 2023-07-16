@@ -5,13 +5,13 @@ using YesSql.Sql;
 
 namespace VisusCore.Storage.Migrations;
 
-public class StreamStorageModePartIndexMigrations : DataMigration
+public class StreamStorageProviderPartIndexMigrations : DataMigration
 {
     public int Create()
     {
-        SchemaBuilder.CreateMapIndexTable<StreamStorageModePartIndex>(table => table
+        SchemaBuilder.CreateMapIndexTable<StreamStorageProviderPartIndex>(table => table
             .MapContentPartIndex()
-            .Column(model => model.Mode));
+            .Column(model => model.Provider, column => column.Nullable().WithLength(1024)));
 
         return 1;
     }

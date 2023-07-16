@@ -7,4 +7,13 @@ namespace VisusCore.Storage.Abstractions.Services;
 /// </summary>
 public interface IStreamSegmentStorage : IVideoStreamSegmentConsumer
 {
+    /// <summary>
+    /// Gets the storage name.
+    /// </summary>
+    string DisplayName { get; }
+
+    /// <summary>
+    /// Gets the storage provider.
+    /// </summary>
+    string Provider { get; }
 }

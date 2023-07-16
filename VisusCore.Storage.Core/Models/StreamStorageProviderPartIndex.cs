@@ -2,7 +2,7 @@ using VisusCore.AidStack.OrchardCore.Parts.Indexing.Models;
 
 namespace VisusCore.Storage.Core.Models;
 
-public class StreamStorageModePartIndex : ContentPartIndex
+public class StreamStorageProviderPartIndex : ContentPartIndex
 {
-    public EStorageMode Mode { get; set; }
+    public string Provider { get; set; }
 }

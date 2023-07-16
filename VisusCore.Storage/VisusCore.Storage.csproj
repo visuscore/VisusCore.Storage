@@ -17,6 +17,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\VisusCore.AidStack\VisusCore.AidStack.OrchardCore\VisusCore.AidStack.OrchardCore.csproj" />
     <ProjectReference Include="..\..\..\Libraries\VisusCore.AidStack\VisusCore.AidStack\VisusCore.AidStack.csproj" />
+    <ProjectReference Include="..\..\VisusCore.Consumer\VisusCore.Consumer.Core\VisusCore.Consumer.Core.csproj" />
+    <ProjectReference Include="..\..\VisusCore.EventBus\VisusCore.EventBus\VisusCore.EventBus.csproj" />
     <ProjectReference Include="..\VisusCore.Storage.Core\VisusCore.Storage.Core.csproj" />
   </ItemGroup>
 

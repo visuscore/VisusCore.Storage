@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
+using OrchardCore.Data;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using VisusCore.AidStack.OrchardCore.Extensions;
@@ -42,5 +43,19 @@ public class Startup : StartupBase
             StreamStorageTimeLimitPartIndex>();
         services.AddContentPart<StreamStorageTimeLimitPart>()
             .UseDisplayDriver<StreamStorageTimeLimitDisplayDriver>();
+
+        services.AddDataMigration<StreamStorageProviderPartMigrations>();
+        services.AddDataMigration<StreamStorageProviderPartIndexMigrations>();
+        services.AddScopedContentPartIndexProvider<
+            StreamStorageProviderPartIndexProvider,
+            StreamStorageProviderPart,
+            StreamStorageProviderPartIndex>();
+        services.AddContentPart<StreamStorageProviderPart>()
+            .UseDisplayDriver<StreamStorageProviderDisplayDriver>();
+
+        services.AddDataMigration<StreamStorageMigrations>();
+        services.AddIndexProvider<StreamStorageRegistryIndexProvider>();
+        services.AddIndexProvider<StreamStorageInitIndexProvider>();
+        services.AddIndexProvider<StreamStorageSegmentIndexProvider>();
     }
 }

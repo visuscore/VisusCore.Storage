@@ -7,6 +7,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\VisusCore.AidStack\VisusCore.AidStack.OrchardCore\VisusCore.AidStack.OrchardCore.csproj" />
+    <ProjectReference Include="..\..\VisusCore.Consumer\VisusCore.Consumer.Core\VisusCore.Consumer.Core.csproj" />
+    <ProjectReference Include="..\VisusCore.Storage.Abstractions\VisusCore.Storage.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Events\" />
   </ItemGroup>
 
 </Project>

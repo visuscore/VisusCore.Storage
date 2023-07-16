@@ -1,0 +1,9 @@
+@model StreamStorageProviderEditViewModel
+
+@using VisusCore.Storage.Core.Models
+@using VisusCore.Storage.ViewModels
+
+<fieldset class="form-group" asp-validation-class-for="Provider">
+    @Html.LabelFor(model => model.Provider, T["Storage Provider"].Value)
+    @Html.DropDownListFor(model => model.Provider, Model.Providers, new { @class = "form-control" })
+</fieldset>

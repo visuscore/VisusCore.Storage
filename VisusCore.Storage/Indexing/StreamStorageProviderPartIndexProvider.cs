@@ -6,16 +6,16 @@ using VisusCore.Storage.Models;
 
 namespace VisusCore.Storage.Indexing;
 
-public class StreamStorageModePartIndexProvider
-    : ContentPartIndexProvider<StreamStorageModePart, StreamStorageModePartIndex>
+public class StreamStorageProviderPartIndexProvider
+    : ContentPartIndexProvider<StreamStorageProviderPart, StreamStorageProviderPartIndex>
 {
-    public StreamStorageModePartIndexProvider(IServiceProvider serviceProvider)
+    public StreamStorageProviderPartIndexProvider(IServiceProvider serviceProvider)
         : base(serviceProvider)
     {
     }
 
-    protected override StreamStorageModePartIndex CreateIndex(
-        StreamStorageModePart part,
+    protected override StreamStorageProviderPartIndex CreateIndex(
+        StreamStorageProviderPart part,
         ContentItem contentItem) =>
         new()
         {
@@ -24,6 +24,6 @@ public class StreamStorageModePartIndexProvider
             ContentType = contentItem.ContentType,
             Latest = contentItem.Latest,
             Published = contentItem.Published,
-            Mode = part.StorageMode,
+            Provider = part.Provider,
         };
 }
