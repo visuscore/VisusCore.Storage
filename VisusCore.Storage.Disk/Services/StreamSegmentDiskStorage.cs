@@ -17,7 +17,7 @@ using YesSql;
 
 namespace VisusCore.Storage.Disk.Services;
 
-public class StreamSegmentDiskStorage : StreamSegmentStorageBase, IDisposable
+public class StreamSegmentDiskStorage : StreamSegmentStorageBase
 {
     private const string InitDBFileName = "init.db";
     private readonly IOptions<DiskStorageOptions> _options;
@@ -25,7 +25,6 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase, IDisposable
     private readonly IStringLocalizer T;
     private readonly MemoryCache _blobDatabaseCache;
     private string _siteName;
-    private bool _disposed;
 
     public override string DisplayName => T["Disk"];
     public override string Provider => typeof(StreamSegmentDiskStorage).FullName;
@@ -33,11 +32,12 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase, IDisposable
     public StreamSegmentDiskStorage(
         IStore store,
         IClock clock,
+        StreamStorageConfigurationChangeListener configurationChangeListener,
         IOptions<DiskStorageOptions> options,
         ISiteService siteService,
         IStringLocalizer<StreamSegmentDiskStorage> stringLocalizer,
         ILoggerFactory loggerFactory)
-        : base(store, clock)
+        : base(store, clock, configurationChangeListener)
     {
         _options = options;
         _siteService = siteService;
@@ -217,24 +217,11 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase, IDisposable
     private static string GetKeyForRecord(string streamId, long documentId, string extension) =>
         $"{streamId}-{documentId.ToString(CultureInfo.InvariantCulture)}.{extension}";
 
-    protected virtual void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
-        if (!_disposed)
-        {
-            if (disposing)
-            {
-                _blobDatabaseCache.Dispose();
-            }
+        _blobDatabaseCache.Dispose();
 
-            _disposed = true;
-        }
-    }
-
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
+        base.Dispose(disposing);
     }
 }
 

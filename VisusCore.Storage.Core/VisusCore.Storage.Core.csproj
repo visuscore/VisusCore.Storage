@@ -11,8 +11,4 @@
     <ProjectReference Include="..\VisusCore.Storage.Abstractions\VisusCore.Storage.Abstractions.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Events\" />
-  </ItemGroup>
-
 </Project>

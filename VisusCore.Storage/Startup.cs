@@ -1,15 +1,20 @@
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
+using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.Data;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
 using VisusCore.AidStack.OrchardCore.Extensions;
+using VisusCore.EventBus.Core.Extensions;
+using VisusCore.Storage.Core.Events;
 using VisusCore.Storage.Core.Models;
 using VisusCore.Storage.Drivers;
+using VisusCore.Storage.Handlers;
 using VisusCore.Storage.Indexing;
 using VisusCore.Storage.Migrations;
 using VisusCore.Storage.Models;
+using VisusCore.Storage.Services;
 
 namespace VisusCore.Storage;
 
@@ -57,5 +62,12 @@ public class Startup : StartupBase
         services.AddIndexProvider<StreamStorageRegistryIndexProvider>();
         services.AddIndexProvider<StreamStorageInitIndexProvider>();
         services.AddIndexProvider<StreamStorageSegmentIndexProvider>();
+
+        services.AddScoped<IContentHandler, StreamStorageConfigurationChangeHandler>();
+        services.AddSingleton<StreamStorageConfigurationChangeListener>();
+        services.AddReactiveEventConsumer<StreamStoragePublishedEvent>();
+        services.AddReactiveEventConsumer<StreamStorageRemovedEvent>();
+        services.AddReactiveEventConsumer<StreamStorageUnpublishedEvent>();
+        services.AddReactiveEventConsumer<StreamStorageUpdatedEvent>();
     }
 }
