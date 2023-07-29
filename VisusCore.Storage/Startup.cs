@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
@@ -5,12 +7,15 @@ using OrchardCore.ContentManagement.Handlers;
 using OrchardCore.Data;
 using OrchardCore.Data.Migration;
 using OrchardCore.Modules;
+using System;
 using VisusCore.AidStack.OrchardCore.Extensions;
 using VisusCore.EventBus.Core.Extensions;
+using VisusCore.Storage.Abstractions.Services;
 using VisusCore.Storage.Core.Events;
 using VisusCore.Storage.Core.Models;
 using VisusCore.Storage.Drivers;
 using VisusCore.Storage.Handlers;
+using VisusCore.Storage.Hubs;
 using VisusCore.Storage.Indexing;
 using VisusCore.Storage.Migrations;
 using VisusCore.Storage.Models;
@@ -69,5 +74,11 @@ public class Startup : StartupBase
         services.AddReactiveEventConsumer<StreamStorageRemovedEvent>();
         services.AddReactiveEventConsumer<StreamStorageUnpublishedEvent>();
         services.AddReactiveEventConsumer<StreamStorageUpdatedEvent>();
+
+        services.AddScoped<IStreamSegmentStorageReader, StreamSegmentStorageReader>();
     }
+
+    public override void Configure(IApplicationBuilder app, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) =>
+        app.UseEndpoints(endpoints =>
+            endpoints.MapHub<StreamInfoHub>("storage/stream-info"));
 }

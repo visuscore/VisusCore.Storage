@@ -11,7 +11,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="OrchardCore.Data.YesSql.Abstractions" Version="1.6.0" />
     <PackageReference Include="OrchardCore.Module.Targets" Version="1.6.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
   </ItemGroup>
   
   <ItemGroup>
@@ -19,6 +21,7 @@
     <ProjectReference Include="..\..\..\Libraries\VisusCore.AidStack\VisusCore.AidStack\VisusCore.AidStack.csproj" />
     <ProjectReference Include="..\..\VisusCore.Consumer\VisusCore.Consumer.Core\VisusCore.Consumer.Core.csproj" />
     <ProjectReference Include="..\..\VisusCore.EventBus\VisusCore.EventBus\VisusCore.EventBus.csproj" />
+    <ProjectReference Include="..\..\VisusCore.SignalR\VisusCore.SignalR\VisusCore.SignalR.csproj" />
     <ProjectReference Include="..\VisusCore.Storage.Core\VisusCore.Storage.Core.csproj" />
   </ItemGroup>
 

@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="YesSql.Abstractions" Version="3.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\VisusCore.Consumer\VisusCore.Consumer.Abstractions\VisusCore.Consumer.Abstractions.csproj" />
   </ItemGroup>
 

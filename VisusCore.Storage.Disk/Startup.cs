@@ -23,6 +23,9 @@ public class Startup : StartupBase
                 .GetSection($"{DiskStorageSection}:{nameof(DiskStorageOptions)}")
                 .Bind(options));
 
+        services.AddSingleton<BlobDatabaseCacheAccessor>();
         services.AddStreamSegmentStorage<StreamSegmentDiskStorage>();
+        services.AddSignalR()
+            .AddJsonProtocol();
     }
 }

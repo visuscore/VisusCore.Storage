@@ -1,5 +1,6 @@
 using OrchardCore.Modules.Manifest;
 using EventBusFeatureIds = VisusCore.EventBus.Constants.FeatureIds;
+using SignalRFeatureIds = VisusCore.SignalR.Constants.FeatureIds;
 
 [assembly: Module(
     Name = "VisusCore Storage",
@@ -11,5 +12,6 @@ using EventBusFeatureIds = VisusCore.EventBus.Constants.FeatureIds;
     Dependencies = new[]
     {
         EventBusFeatureIds.Module,
+        SignalRFeatureIds.Module,
     }
 )]

@@ -1,7 +1,10 @@
+using VisusCore.Storage.Abstractions.Models;
+
 namespace VisusCore.Storage.Core.Models;
 
-public class StreamStorageSegmentIndex : StreamStorageEntityIndex
+public class StreamStorageSegmentIndex : StreamStorageEntityIndex, IStreamSegmentKey
 {
+    public long DocumentId { get; set; }
     public string Provider { get; set; }
     public long InitId { get; set; }
     public long TimestampUtc { get; set; }

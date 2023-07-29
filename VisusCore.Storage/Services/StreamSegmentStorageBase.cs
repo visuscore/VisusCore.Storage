@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using VisusCore.Consumer.Abstractions.Models;
+using VisusCore.Storage.Abstractions.Models;
 using VisusCore.Storage.Abstractions.Services;
 using VisusCore.Storage.Core.Events;
 using VisusCore.Storage.Core.Models;
@@ -75,7 +76,7 @@ public abstract class StreamSegmentStorageBase : IStreamSegmentStorage, IDisposa
             return;
         }
 
-        using var session = _store.CreateSession();
+        using var session = CreateSession();
         var storageContext = CreateStorageContext(consumerContext, session);
 
         await consumerContext.ConsumeLock.WaitAsync(cancellationToken);
@@ -95,6 +96,14 @@ public abstract class StreamSegmentStorageBase : IStreamSegmentStorage, IDisposa
 
         await session.SaveChangesAsync();
     }
+
+    protected ISession CreateSession() => _store.CreateSession();
+
+    public abstract Task<IEnumerable<IVideoStreamSegment>> GetSegmentsByKeyAsync<TStreamSegmentKey>(
+        IEnumerable<TStreamSegmentKey> keys,
+        Func<TStreamSegmentKey, IVideoStreamInit, byte[], Task<IVideoStreamSegment>> converterAsync,
+        CancellationToken cancellationToken = default)
+        where TStreamSegmentKey : IStreamSegmentKey;
 
     protected abstract Task<IVideoStreamInit> GetLatestInitAsync(
         IStreamSegmentStorageContext context,
@@ -127,7 +136,7 @@ public abstract class StreamSegmentStorageBase : IStreamSegmentStorage, IDisposa
         IVideoStreamInit init,
         CancellationToken cancellationToken = default)
     {
-        using var session = _store.CreateSession();
+        using var session = CreateSession();
         var consumerContext = await UpdateConsumerContextAsync(session, new() { StreamId = streamId });
 
         consumerContext.LatestInit = !consumerContext.Consuming
@@ -153,7 +162,7 @@ public abstract class StreamSegmentStorageBase : IStreamSegmentStorage, IDisposa
             return;
         }
 
-        using var session = _store.CreateSession();
+        using var session = CreateSession();
 
         await consumerContext.ConsumeLock.WaitAsync();
         try
