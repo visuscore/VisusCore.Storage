@@ -48,4 +48,17 @@ public interface IStreamSegmentStorageReader
     /// Gets the segment metadata where the <paramref name="expectedTimestampUtc"/> is in.
     /// </summary>
     Task<IVideoStreamSegmentMetadata> GetSegmentMetaAroundAsync(string streamId, long expectedTimestampUtc);
+
+    /// <summary>
+    /// Gets the latest segment before the <paramref name="expectedTimestampUtc"/>.
+    /// </summary>
+    Task<IVideoStreamSegment> GetSegmentLatestBeforeAsync(
+        string streamId,
+        long expectedTimestampUtc,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the latest segment metadata before the <paramref name="expectedTimestampUtc"/>.
+    /// </summary>
+    Task<IVideoStreamSegmentMetadata> GetSegmentMetaLatestBeforeAsync(string streamId, long expectedTimestampUtc);
 }

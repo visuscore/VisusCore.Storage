@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using VisusCore.Consumer.Abstractions.Models;
 using VisusCore.Storage.Abstractions.Services;
+using VisusCore.Storage.Models;
 
 namespace VisusCore.Storage.Hubs;
 
@@ -13,17 +14,26 @@ public class StreamInfoHub : Hub
     public StreamInfoHub(IStreamSegmentStorageReader storageReader) =>
         _storageReader = storageReader;
 
-    public Task<IEnumerable<IVideoStreamSegmentMetadata>> GetSegmentsAsync(
+    public async Task<VideoStreamSegmentMetadata[]> GetSegmentsAsync(
         string streamId,
         long? from,
         long? to,
         int? skip,
         int? take) =>
-        _storageReader.GetSegmentMetasAsync(
+        (await _storageReader.GetSegmentMetasAsync(
             streamId,
             from ?? 0,
             to,
             skip,
             take,
-            Context.ConnectionAborted);
+            Context.ConnectionAborted))
+        .Select(metadata => new VideoStreamSegmentMetadata
+        {
+            Duration = metadata.Duration,
+            FrameCount = metadata.FrameCount,
+            StreamId = metadata.StreamId,
+            TimestampProvided = metadata.TimestampProvided,
+            TimestampUtc = metadata.TimestampUtc,
+        })
+        .ToArray();
 }

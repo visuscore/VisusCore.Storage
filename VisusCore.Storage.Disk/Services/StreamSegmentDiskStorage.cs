@@ -138,7 +138,7 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
 
                 return Task.FromResult(new VideoStreamInit
                 {
-                    Id = initRecord.Id,
+                    Id = initRecord.DocumentId,
                     StreamId = initRecord.StreamId,
                     Init = new ReadOnlySpan<byte>(initStream.ToArray()),
                 });
@@ -170,6 +170,7 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
             {
                 using var initStream = new MemoryStream(init.Init.ToArray());
                 initDb.Store(GetKeyForInitRecord(initRecord), initStream);
+                initDb.Persist();
 
                 return Task.CompletedTask;
             },
@@ -216,6 +217,7 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
             {
                 using var initStream = new MemoryStream(segment.Data.ToArray());
                 segmentDb.Store(GetKeyForSegmentRecord(segmentRecord), initStream);
+                segmentDb.Persist();
 
                 return Task.CompletedTask;
             },

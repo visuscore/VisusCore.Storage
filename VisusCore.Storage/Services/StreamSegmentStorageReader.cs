@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VisusCore.Consumer.Abstractions.Models;
 using VisusCore.Storage.Abstractions.Services;
 using VisusCore.Storage.Core.Models;
+using VisusCore.Storage.Models;
 using YesSql;
 
 namespace VisusCore.Storage.Services;
@@ -70,12 +71,31 @@ public class StreamSegmentStorageReader : IStreamSegmentStorageReader
         (await GetSegmentIndexesAsync(streamId, startTimestampUtc, endTimestampUtc, skip, take))
             .Select(SegmentIndexToSegmentMetadata);
 
-    public async Task<IVideoStreamSegment> GetSegmentAroundAsync(
+    public Task<IVideoStreamSegment> GetSegmentAroundAsync(
         string streamId,
         long expectedTimestampUtc,
+        CancellationToken cancellationToken = default) =>
+        GetSegmentAroundAsync(streamId, expectedTimestampUtc, latestBefore: false, cancellationToken);
+
+    public async Task<IVideoStreamSegmentMetadata> GetSegmentMetaAroundAsync(string streamId, long expectedTimestampUtc) =>
+        SegmentIndexToSegmentMetadata(await GetSegmentIndexAroundAsync(streamId, expectedTimestampUtc));
+
+    public Task<IVideoStreamSegment> GetSegmentLatestBeforeAsync(
+        string streamId,
+        long expectedTimestampUtc,
+        CancellationToken cancellationToken = default) =>
+        GetSegmentAroundAsync(streamId, expectedTimestampUtc, latestBefore: true, cancellationToken);
+
+    public async Task<IVideoStreamSegmentMetadata> GetSegmentMetaLatestBeforeAsync(string streamId, long expectedTimestampUtc) =>
+        SegmentIndexToSegmentMetadata(await GetSegmentIndexAroundAsync(streamId, expectedTimestampUtc, latestBefore: true));
+
+    private async Task<IVideoStreamSegment> GetSegmentAroundAsync(
+        string streamId,
+        long expectedTimestampUtc,
+        bool latestBefore,
         CancellationToken cancellationToken = default)
     {
-        var meta = await GetSegmentIndexAroundAsync(streamId, expectedTimestampUtc);
+        var meta = await GetSegmentIndexAroundAsync(streamId, expectedTimestampUtc, latestBefore);
         if (meta is null)
         {
             return null;
@@ -100,9 +120,6 @@ public class StreamSegmentStorageReader : IStreamSegmentStorageReader
             cancellationToken))
             .FirstOrDefault();
     }
-
-    public async Task<IVideoStreamSegmentMetadata> GetSegmentMetaAroundAsync(string streamId, long expectedTimestampUtc) =>
-        SegmentIndexToSegmentMetadata(await GetSegmentIndexAroundAsync(streamId, expectedTimestampUtc));
 
     private async Task<IEnumerable<StreamStorageSegmentIndex>> GetSegmentIndexesAsync(
         string streamId,
@@ -135,13 +152,22 @@ public class StreamSegmentStorageReader : IStreamSegmentStorageReader
             .ToArray();
     }
 
-    private Task<StreamStorageSegmentIndex> GetSegmentIndexAroundAsync(string streamId, long expectedTimestampUtc) =>
-        _session.QueryIndex<StreamStorageSegmentIndex>()
+    private Task<StreamStorageSegmentIndex> GetSegmentIndexAroundAsync(
+        string streamId,
+        long expectedTimestampUtc,
+        bool latestBefore = false)
+    {
+        var query = _session.QueryIndex<StreamStorageSegmentIndex>()
             .Where(index =>
                 index.StreamId == streamId
-                && index.TimestampUtc <= expectedTimestampUtc
-                && index.TimestampUtc + index.Duration >= expectedTimestampUtc)
-            .FirstOrDefaultAsync();
+                && index.TimestampUtc <= expectedTimestampUtc);
+        query = latestBefore
+            ? query.OrderByDescending(index => index.TimestampUtc)
+            : query.Where(index => index.TimestampUtc + index.Duration >= expectedTimestampUtc)
+                .OrderBy(index => index.TimestampUtc);
+
+        return query.FirstOrDefaultAsync();
+    }
 
     private static VideoStreamSegmentMetadata SegmentIndexToSegmentMetadata(StreamStorageSegmentIndex indexRecord) =>
         new()
@@ -152,19 +178,6 @@ public class StreamSegmentStorageReader : IStreamSegmentStorageReader
             TimestampProvided = indexRecord.TimestampProvided,
             TimestampUtc = indexRecord.TimestampUtc,
         };
-}
-
-internal sealed class VideoStreamSegmentMetadata : IVideoStreamSegmentMetadata
-{
-    public string StreamId { get; init; }
-
-    public long TimestampUtc { get; init; }
-
-    public long Duration { get; init; }
-
-    public long? TimestampProvided { get; init; }
-
-    public long FrameCount { get; init; }
 }
 
 internal sealed class VideoStreamSegment : IVideoStreamSegment
