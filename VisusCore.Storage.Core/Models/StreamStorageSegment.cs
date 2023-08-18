@@ -1,6 +1,8 @@
+using VisusCore.Storage.Abstractions.Models;
+
 namespace VisusCore.Storage.Core.Models;
 
-public class StreamStorageSegment : StreamStorageEntity
+public sealed class StreamStorageSegment : StreamStorageEntity, IStreamSegmentKey
 {
     public string Provider { get; set; }
     public long InitId { get; set; }
@@ -10,4 +12,6 @@ public class StreamStorageSegment : StreamStorageEntity
     public long FrameCount { get; set; }
     public long Size { get; set; }
     public long CreatedUtc { get; set; }
+
+    long IStreamSegmentKey.DocumentId => Id;
 }

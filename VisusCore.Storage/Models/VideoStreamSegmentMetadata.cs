@@ -13,4 +13,6 @@ public class VideoStreamSegmentMetadata : IVideoStreamSegmentMetadata
     public long? TimestampProvided { get; init; }
 
     public long FrameCount { get; init; }
+
+    public long Size { get; init; }
 }

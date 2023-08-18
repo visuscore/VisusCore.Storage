@@ -34,6 +34,7 @@ public class StreamInfoHub : Hub
             StreamId = metadata.StreamId,
             TimestampProvided = metadata.TimestampProvided,
             TimestampUtc = metadata.TimestampUtc,
+            Size = metadata.Size,
         })
         .ToArray();
 }

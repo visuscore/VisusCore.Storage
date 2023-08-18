@@ -26,6 +26,7 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
     private readonly BlobDatabaseCacheAccessor _blobDatabaseCache;
     private readonly ISiteService _siteService;
     private readonly IStringLocalizer T;
+    private readonly ILogger _logger;
     private string _siteName;
 
     public override string DisplayName => T["Disk"];
@@ -39,6 +40,7 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
         BlobDatabaseCacheAccessor blobDatabaseCache,
         ISiteService siteService,
         IStringLocalizer<StreamSegmentDiskStorage> stringLocalizer,
+        ILogger<StreamSegmentDiskStorage> logger,
         ILoggerFactory loggerFactory)
         : base(store, clock, configurationChangeListener)
     {
@@ -46,6 +48,7 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
         _blobDatabaseCache = blobDatabaseCache;
         _siteService = siteService;
         T = stringLocalizer;
+        _logger = logger;
     }
 
     public override async Task<IEnumerable<IVideoStreamSegment>> GetSegmentsByKeyAsync<TStreamSegmentKey>(
@@ -105,6 +108,49 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
                     .ToAsyncEnumerable();
             })
             .ToListAsync(cancellationToken);
+    }
+
+    public override async Task DeleteSegmentsByKeyAsync<TStreamSegmentKey>(
+        IEnumerable<TStreamSegmentKey> keys,
+        CancellationToken cancellationToken = default)
+    {
+        using var session = CreateSession();
+        foreach (var key in keys)
+        {
+            try
+            {
+                using var transaction = await session.BeginTransactionAsync();
+                var directory = await GetCreateStreamRootDirectoryAsync(key.StreamId);
+                var segment = await session.GetAsync<StreamStorageSegment>(key.DocumentId);
+                session.Delete(segment);
+                var dbPath = Path.Combine(directory.FullName, GetDatabaseNameForSegment(segment.TimestampUtc));
+                await _blobDatabaseCache.InvokeOnReadWriteLockAsync(
+                    dbPath,
+                    segmentDb =>
+                    {
+                        var blobKey = GetKeyForSegmentRecord(key.StreamId, key.DocumentId);
+                        var blobEntry = segmentDb.ListFiles().Find(entry => entry.FileName == blobKey);
+                        if (blobEntry is not null)
+                        {
+                            segmentDb.Delete(blobEntry.ID);
+                            segmentDb.Persist();
+                        }
+
+                        return Task.CompletedTask;
+                    },
+                    cancellationToken);
+
+                await session.SaveChangesAsync();
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(
+                    exception,
+                    "Error deleting segment {DocumentId} from stream {StreamId}",
+                    key.DocumentId,
+                    key.StreamId);
+            }
+        }
     }
 
     protected override async Task<IVideoStreamInit> GetLatestInitAsync(

@@ -104,6 +104,10 @@ public abstract class StreamSegmentStorageBase : IStreamSegmentStorage, IDisposa
         Func<TStreamSegmentKey, IVideoStreamInit, byte[], Task<IVideoStreamSegment>> converterAsync,
         CancellationToken cancellationToken = default)
         where TStreamSegmentKey : IStreamSegmentKey;
+    public abstract Task DeleteSegmentsByKeyAsync<TStreamSegmentKey>(
+        IEnumerable<TStreamSegmentKey> keys,
+        CancellationToken cancellationToken = default)
+        where TStreamSegmentKey : IStreamSegmentKey;
 
     protected abstract Task<IVideoStreamInit> GetLatestInitAsync(
         IStreamSegmentStorageContext context,

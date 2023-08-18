@@ -177,6 +177,7 @@ public class StreamSegmentStorageReader : IStreamSegmentStorageReader
             StreamId = indexRecord.StreamId,
             TimestampProvided = indexRecord.TimestampProvided,
             TimestampUtc = indexRecord.TimestampUtc,
+            Size = indexRecord.Size,
         };
 }
 

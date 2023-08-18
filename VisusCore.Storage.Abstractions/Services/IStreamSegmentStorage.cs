@@ -32,4 +32,13 @@ public interface IStreamSegmentStorage : IVideoStreamSegmentConsumer
         Func<TStreamSegmentKey, IVideoStreamInit, byte[], Task<IVideoStreamSegment>> converterAsync,
         CancellationToken cancellationToken = default)
         where TStreamSegmentKey : IStreamSegmentKey;
+
+    /// <summary>
+    /// Deletes the <see cref="IVideoStreamSegment"/> for the given <paramref name="keys"/>.
+    /// </summary>
+    /// <typeparam name="TStreamSegmentKey">The key type.</typeparam>
+    Task DeleteSegmentsByKeyAsync<TStreamSegmentKey>(
+        IEnumerable<TStreamSegmentKey> keys,
+        CancellationToken cancellationToken = default)
+        where TStreamSegmentKey : IStreamSegmentKey;
 }

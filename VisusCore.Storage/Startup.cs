@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using OrchardCore.BackgroundTasks;
 using OrchardCore.ContentManagement;
 using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Handlers;
@@ -76,6 +77,9 @@ public class Startup : StartupBase
         services.AddReactiveEventConsumer<StreamStorageUpdatedEvent>();
 
         services.AddScoped<IStreamSegmentStorageReader, StreamSegmentStorageReader>();
+
+        services.AddScoped<IBackgroundTask, StreamSegmentStorageMaintainerBackgroundTask>();
+        services.AddScoped<StreamSegmentStorageMaintainer>();
     }
 
     public override void Configure(IApplicationBuilder app, IEndpointRouteBuilder routes, IServiceProvider serviceProvider) =>
