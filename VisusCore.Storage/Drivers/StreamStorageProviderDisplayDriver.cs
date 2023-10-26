@@ -4,6 +4,7 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,6 +55,21 @@ public class StreamStorageProviderDisplayDriver : ContentPartDisplayDriver<Strea
         IUpdateModel updater,
         UpdatePartEditorContext context)
     {
+        if (part is null)
+        {
+            throw new ArgumentNullException(nameof(part));
+        }
+
+        if (updater is null)
+        {
+            throw new ArgumentNullException(nameof(updater));
+        }
+
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         var viewModel = new StreamStorageProviderEditViewModel();
 
         await context.Updater.TryUpdateModelAsync(viewModel, Prefix);

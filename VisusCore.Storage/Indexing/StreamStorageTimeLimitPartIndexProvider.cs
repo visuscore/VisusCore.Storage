@@ -16,8 +16,19 @@ public class StreamStorageTimeLimitPartIndexProvider
 
     protected override StreamStorageTimeLimitPartIndex CreateIndex(
         StreamStorageTimeLimitPart part,
-        ContentItem contentItem) =>
-        new()
+        ContentItem contentItem)
+    {
+        if (part is null)
+        {
+            throw new ArgumentNullException(nameof(part));
+        }
+
+        if (contentItem is null)
+        {
+            throw new ArgumentNullException(nameof(contentItem));
+        }
+
+        return new()
         {
             ContentItemId = contentItem.ContentItemId,
             ContentItemVersionId = contentItem.ContentItemVersionId,
@@ -27,4 +38,5 @@ public class StreamStorageTimeLimitPartIndexProvider
             EnableTimeLimit = part.EnableTimeLimit,
             TimeLimitHours = part.TimeLimitHours,
         };
+    }
 }

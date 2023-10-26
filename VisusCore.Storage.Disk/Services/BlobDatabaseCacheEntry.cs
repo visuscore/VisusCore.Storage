@@ -30,6 +30,11 @@ public class BlobDatabaseCacheEntry : IDisposable
         Func<BlobDatabase, Task> actionAsync,
         CancellationToken cancellationToken = default)
     {
+        if (actionAsync is null)
+        {
+            throw new ArgumentNullException(nameof(actionAsync));
+        }
+
         await _readWriteLock.WaitAsync(cancellationToken);
 
         try

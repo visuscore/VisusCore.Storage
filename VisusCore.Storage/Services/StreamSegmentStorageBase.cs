@@ -49,13 +49,17 @@ public abstract class StreamSegmentStorageBase : IStreamSegmentStorage, IDisposa
             if (_streamStoragePublishedSubscription is null)
             {
                 _streamStoragePublishedSubscription = await _configurationChangeListener.StreamStoragePublished
-                    .SubscribeAsync(async deviceEvent => await UpdateConsumerContextAsync(deviceEvent));
+                    .SubscribeAsync(async deviceEvent =>
+                        await UpdateConsumerContextAsync(deviceEvent));
                 _streamStorageRemovedSubscription = await _configurationChangeListener.StreamStorageRemoved
-                    .SubscribeAsync(async deviceEvent => await UpdateConsumerContextAsync(deviceEvent));
+                    .SubscribeAsync(async deviceEvent =>
+                        await UpdateConsumerContextAsync(deviceEvent));
                 _streamStorageUnpublishedSubscription = await _configurationChangeListener.StreamStorageUnpublished
-                    .SubscribeAsync(async deviceEvent => await UpdateConsumerContextAsync(deviceEvent));
+                    .SubscribeAsync(async deviceEvent =>
+                        await UpdateConsumerContextAsync(deviceEvent));
                 _streamStorageUpdatedSubscription = await _configurationChangeListener.StreamStorageUpdated
-                    .SubscribeAsync(async deviceEvent => await UpdateConsumerContextAsync(deviceEvent));
+                    .SubscribeAsync(async deviceEvent =>
+                        await UpdateConsumerContextAsync(deviceEvent));
             }
         }
         finally
@@ -66,6 +70,11 @@ public abstract class StreamSegmentStorageBase : IStreamSegmentStorage, IDisposa
 
     public async Task ConsumeAsync(IVideoStreamSegment segment, CancellationToken cancellationToken = default)
     {
+        if (segment is null)
+        {
+            throw new ArgumentNullException(nameof(segment));
+        }
+
         await EnsureConfigurationChangeSubscriptionsAsync();
 
         var consumerContext = await _contexts.GetValueOrAddIfMissingAsync(

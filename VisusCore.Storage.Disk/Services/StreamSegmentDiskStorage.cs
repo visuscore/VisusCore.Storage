@@ -114,6 +114,11 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
         IEnumerable<TStreamSegmentKey> keys,
         CancellationToken cancellationToken = default)
     {
+        if (keys is null)
+        {
+            throw new ArgumentNullException(nameof(keys));
+        }
+
         using var session = CreateSession();
         foreach (var key in keys)
         {
@@ -157,6 +162,11 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
         IStreamSegmentStorageContext context,
         CancellationToken cancellationToken = default)
     {
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         var initRecord = await context.Session.QueryIndex<StreamStorageInitIndex>()
             .Where(index =>
                 index.StreamId == context.StreamId
@@ -235,6 +245,16 @@ public class StreamSegmentDiskStorage : StreamSegmentStorageBase
         IVideoStreamSegment segment,
         CancellationToken cancellationToken = default)
     {
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
+        if (segment is null)
+        {
+            throw new ArgumentNullException(nameof(segment));
+        }
+
         if (context.LatestInit is not VideoStreamInit latestInit)
         {
             throw new InvalidOperationException("Stream init is not available.");

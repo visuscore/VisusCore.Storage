@@ -16,8 +16,19 @@ public class StreamStorageModePartIndexProvider
 
     protected override StreamStorageModePartIndex CreateIndex(
         StreamStorageModePart part,
-        ContentItem contentItem) =>
-        new()
+        ContentItem contentItem)
+    {
+        if (part is null)
+        {
+            throw new ArgumentNullException(nameof(part));
+        }
+
+        if (contentItem is null)
+        {
+            throw new ArgumentNullException(nameof(contentItem));
+        }
+
+        return new()
         {
             ContentItemId = contentItem.ContentItemId,
             ContentItemVersionId = contentItem.ContentItemVersionId,
@@ -26,4 +37,5 @@ public class StreamStorageModePartIndexProvider
             Published = contentItem.Published,
             Mode = part.StorageMode,
         };
+    }
 }

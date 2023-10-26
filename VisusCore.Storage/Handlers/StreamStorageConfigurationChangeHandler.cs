@@ -16,16 +16,16 @@ public class StreamStorageConfigurationChangeHandler : ContentHandlerBase
         _eventPublisher = eventPublisher;
 
     public override Task PublishedAsync(PublishContentContext context) =>
-        PublishEventConditionallyAsync(context);
+        PublishEventConditionallyAsync(context ?? throw new ArgumentNullException(nameof(context)));
 
     public override Task RemovedAsync(RemoveContentContext context) =>
-        PublishEventConditionallyAsync(context);
+        PublishEventConditionallyAsync(context ?? throw new ArgumentNullException(nameof(context)));
 
     public override Task UnpublishedAsync(PublishContentContext context) =>
-        PublishEventConditionallyAsync(context, unpublish: true);
+        PublishEventConditionallyAsync(context ?? throw new ArgumentNullException(nameof(context)), unpublish: true);
 
     public override Task UpdatedAsync(UpdateContentContext context) =>
-        PublishEventConditionallyAsync(context);
+        PublishEventConditionallyAsync(context ?? throw new ArgumentNullException(nameof(context)));
 
     private async Task PublishEventConditionallyAsync(ContentContextBase context, bool unpublish = false)
     {

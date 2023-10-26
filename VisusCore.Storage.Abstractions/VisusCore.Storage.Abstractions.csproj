@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="YesSql.Abstractions" Version="3.3.0" />
+    <PackageReference Include="YesSql.Abstractions" Version="3.4.0" />
   </ItemGroup>
 
   <ItemGroup>

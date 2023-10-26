@@ -2,6 +2,7 @@ using OrchardCore.ContentManagement.Display.ContentDisplay;
 using OrchardCore.ContentManagement.Display.Models;
 using OrchardCore.DisplayManagement.ModelBinding;
 using OrchardCore.DisplayManagement.Views;
+using System;
 using System.Threading.Tasks;
 using VisusCore.Storage.Models;
 using VisusCore.Storage.ViewModels;
@@ -22,6 +23,21 @@ public class StreamStorageTimeLimitDisplayDriver : ContentPartDisplayDriver<Stre
         IUpdateModel updater,
         UpdatePartEditorContext context)
     {
+        if (part is null)
+        {
+            throw new ArgumentNullException(nameof(part));
+        }
+
+        if (updater is null)
+        {
+            throw new ArgumentNullException(nameof(updater));
+        }
+
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         var viewModel = new StreamStorageTimeLimitEditViewModel();
 
         await context.Updater.TryUpdateModelAsync(viewModel, Prefix);

@@ -1,3 +1,4 @@
+using System;
 using VisusCore.Storage.Core.Models;
 using YesSql.Indexes;
 
@@ -5,7 +6,13 @@ namespace VisusCore.Storage.Indexing;
 
 public class StreamStorageSegmentIndexProvider : IndexProvider<StreamStorageSegment>
 {
-    public override void Describe(DescribeContext<StreamStorageSegment> context) =>
+    public override void Describe(DescribeContext<StreamStorageSegment> context)
+    {
+        if (context is null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
         context.For<StreamStorageSegmentIndex>()
             .Map(streamStorageSegment => new StreamStorageSegmentIndex
             {
@@ -19,4 +26,5 @@ public class StreamStorageSegmentIndexProvider : IndexProvider<StreamStorageSegm
                 Size = streamStorageSegment.Size,
                 CreatedUtc = streamStorageSegment.CreatedUtc,
             });
+    }
 }
